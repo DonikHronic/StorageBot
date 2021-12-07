@@ -1,6 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 from django.urls import reverse
 
 from utils.get_folder_path import image_path
@@ -9,10 +11,15 @@ from utils.get_folder_path import image_path
 class BaseUser(AbstractBaseUser, PermissionsMixin):
 	"""Custom user for control"""
 
+	class Role(models.TextChoices):
+		E = 'E', 'Employee'
+		C = 'C', 'Client'
+
 	username = models.CharField('Пользователь', max_length=25, unique=True)
-	email = models.EmailField('Email', unique=True)
+	email = models.EmailField('Email', unique=True, null=True, blank=True)
 	phone_number = models.CharField('Номер телефона', max_length=15, null=True, blank=True)
 	fullname = models.CharField('Полное имя', max_length=150)
+	telegram_id = models.PositiveIntegerField('Telegram ID', unique=True, null=True)
 
 	date_joined = models.DateTimeField('Дата регистрации', auto_now_add=True)
 	is_active = models.BooleanField('is_active', default=True)
@@ -26,6 +33,12 @@ class BaseUser(AbstractBaseUser, PermissionsMixin):
 
 	def __str__(self):
 		return self.fullname
+
+	def get_full_name(self):
+		return self.username
+
+	def get_short_name(self):
+		return self.username
 
 	class Meta:
 		db_table = 'user'
@@ -51,8 +64,7 @@ class Client(models.Model):
 	"""Company clients"""
 
 	user = models.OneToOneField(BaseUser, on_delete=models.CASCADE, related_name='client')
-	cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, null=True, blank=True)
-	telegram_id = models.PositiveIntegerField('Telegram ID', unique=True, null=True)
+	cart = models.ForeignKey('Cart', on_delete=models.SET_NULL, null=True, blank=True, related_name='client_cart')
 
 	def __str__(self):
 		return f'{self.user}'
@@ -138,3 +150,9 @@ class Ticket(models.Model):
 		db_table = 'ticket'
 		verbose_name = 'Заказ'
 		verbose_name_plural = 'Заказы'
+
+
+@receiver(post_save, sender=Client)
+def create_profile(sender, instance, created, **kwargs):
+	if created:
+		instance.cart = Cart.objects.create()

@@ -8,16 +8,17 @@ from src.bot.models import BaseUser, Client, Employee, SecretKey, Product, Cart,
 class BaseUserAdmin(admin.ModelAdmin):
 	"""Custom user"""
 
-	list_display = ('id', 'fullname', 'username', 'phone_number')
+	list_display = ('id', 'fullname', 'username', 'phone_number', 'telegram_id')
+	list_display_links = ('fullname', 'username', 'telegram_id')
+	search_fields = ('telegram_id',)
 
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
 	"""Company clients"""
 
-	list_display = ('id', 'user', 'cart', 'telegram_id')
-	list_display_links = ('id', 'user', 'telegram_id')
-	search_fields = ('telegram_id',)
+	list_display = ('id', 'user', 'cart')
+	list_display_links = ('id', 'user')
 
 
 @admin.register(Employee)

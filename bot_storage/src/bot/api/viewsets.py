@@ -1,14 +1,50 @@
 from rest_framework.decorators import api_view
+from rest_framework import generics, views, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from src.bot.api.serializers import ProductSerializer
-from src.bot.models import Product
+from src.bot.api.permissions import IsOwnerProfileOrReadOnly
+from src.bot.api.serializers import ProductSerializer, EmployeeSerializer, BaseUserSerializer
+from src.bot.models import Product, Employee, BaseUser, Client
+
+
+class EmployeeProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Employee.objects.all()
+	serializer_class = EmployeeSerializer
+	permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
+
+
+class EmployeeRegistration(views.APIView):
+	def post(self, request, *args, **kwargs):
+		serializer = BaseUserSerializer(data=request.data)
+		role = request.data.get('role')
+		if serializer.is_valid() and role == BaseUser.Role.E:
+			user = BaseUser(**request.data)
+			user.save()
+			employee = Employee(user_id=user.id)
+			employee.save()
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ClientRegistration(views.APIView):
+	def post(self, request, *args, **kwargs):
+		serializer = BaseUserSerializer(data=request.data)
+		role = request.data.get('role')
+		del request.data['role']
+		if serializer.is_valid() and role == BaseUser.Role.C:
+			user = BaseUser(**request.data)
+			user.save()
+			employee = Client(user_id=user.id)
+			employee.save()
+			return Response(serializer.data, status=status.HTTP_201_CREATED)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])
 def get_products(request) -> Response:
 	"""
-	Return all of products for Telegram Bot
+	Return all the products for Telegram Bot
 	:param request:
 	:return:
 	"""
@@ -17,26 +53,3 @@ def get_products(request) -> Response:
 	serializer = ProductSerializer(products, many=True)
 
 	return Response(serializer.data)
-
-# def registration(request):
-# 	"""Метод регистрации"""
-#
-# 	context = {}
-# 	if request.method == 'POST':
-# 		username = request.POST.get('username', None)
-# 		password = request.POST.get('password', None)
-# 		email = request.POST.get('email', None)
-# 		user = CustomUser.objects.create(username=username, email=email)
-# 		user.set_password(password)
-# 		user.save()
-# 	return redirect(settings.LOGIN_URL)
-#
-#
-# @login_required
-# def account(request):
-# 	context = {}
-# 	customer_form = CustomerForm()
-# 	context['customer_form'] = customer_form
-# 	user_form = CustomUserForm()
-# 	context['user_form'] = user_form
-# 	return render(request, 'registration/my-account.html', context)
