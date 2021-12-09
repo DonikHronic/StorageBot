@@ -9,8 +9,14 @@ class BaseUserSerializer(serializers.ModelSerializer):
 		fields = ['username', 'password']
 
 
+class UserViewSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = BaseUser
+		fields = ['id', 'fullname', 'username', 'user_photo', 'email', 'phone_number', 'telegram_id']
+
+
 class EmployeeSerializer(serializers.ModelSerializer):
-	user = serializers.StringRelatedField(read_only=True)
+	user = UserViewSerializer(read_only=True)
 
 	class Meta:
 		model = Employee

@@ -1,5 +1,4 @@
-from rest_framework.decorators import api_view
-from rest_framework import generics, views, status
+from rest_framework import generics, views, status, parsers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -12,6 +11,7 @@ class EmployeeProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Employee.objects.all()
 	serializer_class = EmployeeSerializer
 	permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
+	parser_classes = (parsers.MultiPartParser,)
 
 
 class EmployeeRegistration(views.APIView):
@@ -41,15 +41,15 @@ class ClientRegistration(views.APIView):
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
-def get_products(request) -> Response:
-	"""
-	Return all the products for Telegram Bot
-	:param request:
-	:return:
-	"""
+class ProductListCreateView(generics.ListCreateAPIView):
+	queryset = Product.objects.all()
+	serializer_class = ProductSerializer
+	permission_classes = [IsAuthenticated]
+	parser_classes = (parsers.MultiPartParser,)
 
-	products = Product.objects.all()
-	serializer = ProductSerializer(products, many=True)
 
-	return Response(serializer.data)
+class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Product.objects.all()
+	serializer_class = ProductSerializer
+	permission_classes = [IsAuthenticated]
+	parser_classes = (parsers.MultiPartParser,)

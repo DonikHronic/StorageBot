@@ -23,4 +23,4 @@ def convert_text(inner_text: str):
 
 
 def image_path(instance, filename):
-	return f'products/{convert_text(instance.product)}/{filename}'
+	return f'products/{convert_text(instance.name)}/{filename}'
