@@ -5,7 +5,7 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
 	openapi.Info(
-		title='Telegram Bot',
+		title='Storage Bot',
 		default_version='v1',
 		description='Lorem Ipsum',
 		contact=openapi.Contact(url='https://github.com/DonikHronic'),
