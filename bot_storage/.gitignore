@@ -32,3 +32,5 @@ doc-dev
 
 *.log
 .log
+
+token.json

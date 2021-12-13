@@ -18,8 +18,10 @@ class EmployeeRegistration(views.APIView):
 	def post(self, request, *args, **kwargs):
 		serializer = BaseUserSerializer(data=request.data)
 		role = request.data.get('role')
+		del request.data['role']
 		if serializer.is_valid() and role == BaseUser.Role.E:
 			user = BaseUser(**request.data)
+			user.set_password(request.data['password'])
 			user.save()
 			employee = Employee(user_id=user.id)
 			employee.save()
@@ -34,6 +36,7 @@ class ClientRegistration(views.APIView):
 		del request.data['role']
 		if serializer.is_valid() and role == BaseUser.Role.C:
 			user = BaseUser(**request.data)
+			user.set_password(request.data['password'])
 			user.save()
 			employee = Client(user_id=user.id)
 			employee.save()
