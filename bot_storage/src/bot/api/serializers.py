@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.bot.models import Product, Employee, Client, BaseUser
+from src.bot.models import Product, Employee, Client, BaseUser, CartItems
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -34,4 +34,13 @@ class ClientSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Product
+		fields = '__all__'
+
+
+class CartItemSerializer(serializers.ModelSerializer):
+	product = ProductSerializer(read_only=True)
+	cart = serializers.PrimaryKeyRelatedField(read_only=True)
+
+	class Meta:
+		model = CartItems
 		fields = '__all__'

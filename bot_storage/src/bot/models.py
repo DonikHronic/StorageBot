@@ -1,8 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 
 from src.bot.UserManager import UserManager
@@ -167,11 +165,3 @@ class Ticket(models.Model):
 		db_table = 'ticket'
 		verbose_name = 'Заказ'
 		verbose_name_plural = 'Заказы'
-
-
-@receiver(post_save, sender=Client)
-def create_client_cart(sender, instance, created, **kwargs):
-	if created:
-		cart = Cart.objects.create()
-		cart.save()
-		instance.cart = cart
