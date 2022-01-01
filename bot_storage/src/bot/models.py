@@ -1,9 +1,8 @@
 from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin
+from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
 from django.urls import reverse
 
-from src.bot.UserManager import UserManager
 from utils.get_folder_path import image_path
 
 
