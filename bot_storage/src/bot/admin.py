@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from src.bot.models import BaseUser, Client, Employee, SecretKey, Product, Cart, Ticket
+from src.bot.models import BaseUser, Client, Employee, SecretKey, Product, Cart, Ticket, CartItems
 
 
 @admin.register(BaseUser)
@@ -49,7 +49,7 @@ class ProductAdmin(admin.ModelAdmin):
 	save_as = True
 
 	def get_image(self, obj):
-		return mark_safe(f'<img src={obj.preview.url} width="150">')
+		return mark_safe(f'<img src={obj.image.url} width="150">')
 
 	get_image.short_description = 'Изображение'
 
@@ -69,3 +69,8 @@ class TicketAdmin(admin.ModelAdmin):
 	list_filter = ('status',)
 	save_as = True
 	save_on_top = True
+
+
+@admin.register(CartItems)
+class CartItemsAdmin(admin.ModelAdmin):
+	list_display = ('id', 'cart', 'product', 'count')

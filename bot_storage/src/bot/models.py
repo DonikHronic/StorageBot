@@ -1,8 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin, UserManager
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from django.urls import reverse
 
 from utils.get_folder_path import image_path
@@ -115,15 +113,31 @@ class Product(models.Model):
 class Cart(models.Model):
 	"""Products cart for make order"""
 
-	products = models.ManyToManyField(Product, verbose_name='Продукты')
+	items = models.ManyToManyField(Product, verbose_name='Продукты', through='CartItems')
 
 	def __str__(self):
-		return f'{self.products}'
+		return f'{self.items}'
 
 	class Meta:
 		db_table = 'cart'
 		verbose_name = 'Корзина'
 		verbose_name_plural = 'Корзины'
+
+
+class CartItems(models.Model):
+	"""Intermediary model for cart items"""
+
+	product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name='Продукт')
+	cart = models.ForeignKey(Cart, on_delete=models.CASCADE, verbose_name='Корзина')
+	count = models.PositiveIntegerField('Количество', default=1)
+
+	def __str__(self):
+		return f'{self.product} - {self.count}'
+
+	class Meta:
+		db_table = 'cart_items'
+		verbose_name = 'Элемент корзины'
+		verbose_name_plural = 'Элементы корзины'
 
 
 class Ticket(models.Model):
@@ -150,9 +164,3 @@ class Ticket(models.Model):
 		db_table = 'ticket'
 		verbose_name = 'Заказ'
 		verbose_name_plural = 'Заказы'
-
-
-@receiver(post_save, sender=Client)
-def create_profile(sender, instance, created, **kwargs):
-	if created:
-		instance.cart = Cart.objects.create()
