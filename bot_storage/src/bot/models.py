@@ -97,6 +97,7 @@ class Product(models.Model):
 	image = models.ImageField('Изображение', upload_to=image_path)
 	description = models.TextField('Описание', max_length=5000)
 	url = models.SlugField('Ссылка', unique=True, max_length=250)
+	price = models.FloatField('Цена', default=0)
 
 	def __str__(self):
 		return self.name

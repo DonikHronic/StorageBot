@@ -13,4 +13,5 @@ urlpatterns = [
 	path('update-cart/<int:pk>/', viewsets.update_product_in_cart, name='update-cart'),
 	path('remove-from-cart/<int:pk>/', viewsets.remove_from_cart, name='remove-product-from-cart'),
 	path('clear-cart/', viewsets.clear_cart, name='clear-cart'),
+	path('make-order/', viewsets.make_order, name='make-order'),
 ]

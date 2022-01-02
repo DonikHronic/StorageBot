@@ -42,7 +42,7 @@ class SecretKeyAdmin(admin.ModelAdmin):
 class ProductAdmin(admin.ModelAdmin):
 	"""Products in stock"""
 
-	list_display = ('id', 'name', 'description', 'get_image')
+	list_display = ('id', 'name', 'description', 'price', 'get_image')
 	list_display_links = ('id', 'name')
 	search_fields = ('name',)
 	save_on_top = True

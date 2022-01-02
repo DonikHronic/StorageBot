@@ -11,10 +11,13 @@ from src.bot.api.serializers import (
 	BaseUserSerializer,
 	CartItemSerializer
 )
-from src.bot.models import Product, Employee, BaseUser, Client, Cart, CartItems
+from src.bot.models import Product, Employee, BaseUser, Client, Cart, CartItems, Ticket
 
 
 class EmployeeProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
+	"""
+		Employee profile. Account settings
+	"""
 	queryset = Employee.objects.all()
 	serializer_class = EmployeeSerializer
 	permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
@@ -23,13 +26,13 @@ class EmployeeProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class EmployeeRegistration(views.APIView):
 	"""
-		Registration Employees
-		Take data as:
-		{
-			"username": "username", -> required
-			"password": "some_password", -> required
-			"role": "E" -> required (needed to determine the type of user)
-		}
+	Registration Employees
+	Take data as:
+	{
+		"username": "username", -> required
+		"password": "some_password", -> required
+		"role": "E" -> required (needed to determine the type of user)
+	}
 	"""
 
 	def post(self, request, *args, **kwargs):
@@ -47,6 +50,16 @@ class EmployeeRegistration(views.APIView):
 
 
 class ClientRegistration(views.APIView):
+	"""
+	Registration Clients
+	Take data as:
+	{
+		"username": "username", -> required
+		"password": "some_password", -> required
+		"role": "C" -> required (needed to determine the type of user)
+	}
+	"""
+
 	def post(self, request, *args, **kwargs):
 		serializer = BaseUserSerializer(data=request.data)
 		role = request.data.get('role')
@@ -64,6 +77,10 @@ class ClientRegistration(views.APIView):
 
 
 class ProductListCreateView(generics.ListCreateAPIView):
+	"""
+	Product View
+	Create new Product or return Products List
+	"""
 	queryset = Product.objects.all()
 	serializer_class = ProductSerializer
 	permission_classes = [IsAuthenticated]
@@ -71,6 +88,10 @@ class ProductListCreateView(generics.ListCreateAPIView):
 
 
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+	"""
+	Product Detail View
+	Allows you to view and modify Product information
+	"""
 	queryset = Product.objects.all()
 	serializer_class = ProductSerializer
 	permission_classes = [IsAuthenticated]
@@ -78,19 +99,24 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['GET'])
-def get_user_cart(request):
+def get_user_cart(request) -> Response:
+	"""
+	Returns a JSON object containing a list and count of products in the cart of a specific user
+	"""
 	try:
 		cart = request.user.client.cart_id
 		cart_items = CartItems.objects.filter(cart_id=cart)
 		serializer = CartItemSerializer(cart_items, many=True)
-		print(cart_items)
 		return Response(serializer.data)
 	except AttributeError as ex:
 		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['POST'])
-def add_product_to_cart(request):
+def add_product_to_cart(request) -> Response:
+	"""
+	Add product in user cart
+	"""
 	try:
 		user_cart = request.user.client.cart_id
 		product_id = request.data.get('product', None)
@@ -120,7 +146,14 @@ def add_product_to_cart(request):
 
 
 @api_view(['PUT'])
-def update_product_in_cart(request, pk):
+def update_product_in_cart(request, pk: int) -> Response:
+	"""
+	Update product information in user cart
+	:param request: Must contain count in request body
+	:param pk: Product ID
+	:return:
+	"""
+
 	try:
 		count = request.data.get('count', None)
 
@@ -141,7 +174,13 @@ def update_product_in_cart(request, pk):
 
 
 @api_view(['DELETE'])
-def remove_from_cart(request, pk):
+def remove_from_cart(request, pk: int) -> Response:
+	"""
+	Delete product from cart by Product ID
+	:param request:
+	:param pk: Product ID
+	:return:
+	"""
 	try:
 		cart = request.user.client.cart_id
 		item = CartItems.objects.get(cart_id=cart, product_id=pk)
@@ -155,7 +194,10 @@ def remove_from_cart(request, pk):
 
 
 @api_view(['DELETE'])
-def clear_cart(request):
+def clear_cart(request) -> Response:
+	"""
+		Clear user cart
+	"""
 	try:
 		cart = request.user.client.cart_id
 		items = CartItems.objects.filter(cart_id=cart)
@@ -167,3 +209,28 @@ def clear_cart(request):
 
 	except AttributeError as ex:
 		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['POST'])
+def make_order(request) -> Response:
+	try:
+		user = request.user.client
+		cart_items = CartItems.objects.filter(cart_id=user.cart_id)
+		location = request.data.get('location', 'default')
+		total_price = get_total_price(cart_items)
+		products = [item.product for item in cart_items]
+		ticket = Ticket(client=user, total_price=total_price, location=location)
+		ticket.save()
+		ticket.products.add(*products)
+		ticket.save()
+
+		for item in cart_items:
+			item.delete()
+
+		return Response(['Order created'], status=status.HTTP_201_CREATED)
+	except AttributeError as ex:
+		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+
+
+def get_total_price(items) -> float:
+	return sum([item.product.price * item.count for item in items])
