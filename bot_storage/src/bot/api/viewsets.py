@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, views, status, parsers
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes, parser_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -9,7 +9,8 @@ from src.bot.api.serializers import (
 	ProductSerializer,
 	EmployeeSerializer,
 	BaseUserSerializer,
-	CartItemSerializer
+	CartItemSerializer,
+	TicketSerializer
 )
 from src.bot.models import Product, Employee, BaseUser, Client, Cart, CartItems, Ticket
 
@@ -99,6 +100,7 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_user_cart(request) -> Response:
 	"""
 	Returns a JSON object containing a list and count of products in the cart of a specific user
@@ -113,6 +115,7 @@ def get_user_cart(request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def add_product_to_cart(request) -> Response:
 	"""
 	Add product in user cart
@@ -146,6 +149,7 @@ def add_product_to_cart(request) -> Response:
 
 
 @api_view(['PUT'])
+@permission_classes([IsAuthenticated])
 def update_product_in_cart(request, pk: int) -> Response:
 	"""
 	Update product information in user cart
@@ -174,6 +178,7 @@ def update_product_in_cart(request, pk: int) -> Response:
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def remove_from_cart(request, pk: int) -> Response:
 	"""
 	Delete product from cart by Product ID
@@ -194,6 +199,7 @@ def remove_from_cart(request, pk: int) -> Response:
 
 
 @api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
 def clear_cart(request) -> Response:
 	"""
 		Clear user cart
@@ -212,6 +218,7 @@ def clear_cart(request) -> Response:
 
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def make_order(request) -> Response:
 	try:
 		user = request.user.client
@@ -230,6 +237,65 @@ def make_order(request) -> Response:
 		return Response(['Order created'], status=status.HTTP_201_CREATED)
 	except AttributeError as ex:
 		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_orders(request):
+	tickets = Ticket.objects.all()
+	serializer = TicketSerializer(tickets, many=True)
+	return Response(serializer.data)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_orders(request):
+	try:
+		user = request.user.client
+		tickets = Ticket.objects.filter(client=user)
+		serializer = TicketSerializer(tickets, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+
+	except AttributeError as ex:
+		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def get_status_list(request) -> Response:
+	return Response(Ticket.Statuses.choices, status=status.HTTP_200_OK)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_status(request) -> Response:
+	try:
+		order_status = request.data.get('status', None)
+		order = request.data.get('order', None)
+
+		if not order_status:
+			raise ValueError('Status is required')
+
+		if not order:
+			raise ValueError('Order ID is required')
+
+		if order_status not in Ticket.Statuses.names:
+			raise ValueError('Invalid status')
+
+		ticket = Ticket.objects.get(id=order)
+		ticket.status = order_status
+		ticket.save()
+
+		return Response(['Status updated'], status=status.HTTP_202_ACCEPTED)
+
+	except AttributeError as ex:
+		return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+	except ValueError as ex:
+		return Response([f'Invalid data in request: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+	except ObjectDoesNotExist:
+		return Response(
+			[f'Order with ID {request.data.get("order", None)}, does not exist'],
+			status=status.HTTP_400_BAD_REQUEST
+		)
 
 
 def get_total_price(items) -> float:

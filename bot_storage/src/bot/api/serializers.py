@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from src.bot.models import Product, Employee, Client, BaseUser, CartItems
+from src.bot.models import Product, Employee, Client, BaseUser, CartItems, Ticket
 
 
 class BaseUserSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
-	user = serializers.StringRelatedField(read_only=True)
+	user = UserViewSerializer(read_only=True)
 
 	class Meta:
 		model = Client
@@ -43,4 +43,13 @@ class CartItemSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = CartItems
+		fields = '__all__'
+
+
+class TicketSerializer(serializers.ModelSerializer):
+	products = ProductSerializer(many=True, read_only=True)
+	client = ClientSerializer(read_only=True)
+
+	class Meta:
+		model = Ticket
 		fields = '__all__'
