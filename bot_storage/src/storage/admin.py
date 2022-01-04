@@ -1,10 +1,10 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from src.storage.models import Product, ChangeHistory
+from src.storage.models import StorageProduct, ChangeHistory
 
 
-@admin.register(Product)
+@admin.register(StorageProduct)
 class ProductAdmin(admin.ModelAdmin):
 	"""Product"""
 
@@ -24,7 +24,7 @@ class ProductAdmin(admin.ModelAdmin):
 class ChangeHistoryAdmin(admin.ModelAdmin):
 	"""Change history"""
 
-	list_display = ('id', 'product', 'action', 'date')
+	list_display = ('id', 'product', 'action', 'count', 'date')
 	list_display_links = ('id', 'product')
 	list_filter = ('action',)
 	search_fields = ('product__name',)
