@@ -38,10 +38,15 @@ class EmployeeRegistration(views.APIView):
 
 	def post(self, request, *args, **kwargs):
 		serializer = BaseUserSerializer(data=request.data)
-		role = request.data.get('role')
-		del request.data['role']
+		data = {key: val for key, val in request.data.items()}
+		try:
+			data['telegram_id'] = int(data['telegram_id'])
+		except KeyError:
+			pass
+		role = data['role']
+		del data['role']
 		if serializer.is_valid() and role == BaseUser.Role.E:
-			user = BaseUser(**request.data)
+			user = BaseUser(**data)
 			user.set_password(request.data['password'])
 			user.save()
 			employee = Employee(user_id=user.id)
@@ -63,10 +68,15 @@ class ClientRegistration(views.APIView):
 
 	def post(self, request, *args, **kwargs):
 		serializer = BaseUserSerializer(data=request.data)
-		role = request.data.get('role')
-		del request.data['role']
+		data = {key: val for key, val in request.data.items()}
+		try:
+			data['telegram_id'] = int(data['telegram_id'])
+		except KeyError:
+			pass
+		role = data['role']
+		del data['role']
 		if serializer.is_valid() and role == BaseUser.Role.C:
-			user = BaseUser(**request.data)
+			user = BaseUser(**data)
 			cart = Cart()
 			cart.save()
 			user.set_password(request.data['password'])
