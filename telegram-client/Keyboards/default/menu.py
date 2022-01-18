@@ -7,6 +7,7 @@ menu_client = ReplyKeyboardMarkup(
 			KeyboardButton(text="Просмотреть мои заявки")
 		],
 		[
+			KeyboardButton(text="Корзина"),
 			KeyboardButton(text="Связаться с закупщиком")
 		]
 	],

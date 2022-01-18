@@ -156,6 +156,7 @@ class Ticket(models.Model):
 	products = models.ManyToManyField(Product, verbose_name='Продукты')
 	total_price = models.FloatField('Окончательная цена', default=0)
 	location = models.CharField('Локация доставки', max_length=150)
+	detail = models.TextField('Описание', max_length=1500, null=True, blank=True)
 	status = models.CharField('Статус', choices=Statuses.choices, default=Statuses.IN_PROCESS, max_length=25)
 
 	def __str__(self):

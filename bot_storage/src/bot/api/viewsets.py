@@ -1,6 +1,6 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import generics, views, status, parsers
-from rest_framework.decorators import api_view, permission_classes, parser_classes
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
@@ -236,7 +236,12 @@ def make_order(request) -> Response:
 		location = request.data.get('location', 'default')
 		total_price = get_total_price(cart_items)
 		products = [item.product for item in cart_items]
-		ticket = Ticket(client=user, total_price=total_price, location=location)
+
+		description = ''
+		for item in cart_items:
+			description += f'Продукт: {item.product.name} в кол-ве {item.count}шт\n'
+
+		ticket = Ticket(client=user, total_price=total_price, location=location, detail=description)
 		ticket.save()
 		ticket.products.add(*products)
 		ticket.save()
