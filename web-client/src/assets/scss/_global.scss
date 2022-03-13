@@ -1,0 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import "vars";
+
+*, *::before, *::after {
+	box-sizing: border-box;
+	outline: none;
+}
+
+body, html {
+	margin: 0;
+	padding: 0;
+	-webkit-box-sizing: inherit;
+	-moz-box-sizing: inherit;
+	box-sizing: inherit;
+	font-size: 25px;
+	font-family: 'Roboto', sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.7px;
+}
+
+ul, ol, li, p, h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+	padding: 0;
+}
+
+ul,
+ol,
+li {
+	list-style: none;
+}
+
+a,
+a:hover {
+	-webkit-tap-highlight-color: transparent;
+	text-decoration: none;
+	color: unset;
+}
+
+a:hover {
+	color: var(--main-color);
+}
+
+button {
+	cursor: pointer;
+	color: var(--txt-color);
+	border: 0;
+	outline: 0;
+}
+
+input {
+	border: 2px solid transparent;
+	outline: 0;
+}
+
+button:focus,
+input:focus {
+	outline: transparent;
+	color: var(--txt-color);
+}
+
+input:focus {
+	border: 2px solid var(--main-color);
+}
+
+::selection {
+	background-color: rgba(127, 180, 184, 0.535);
+	color: #ffffff !important;
+}
+
+$maxWidth: 1920;
+
+@mixin adaptive-font($pcSize, $mobSize) {
+	$addSize: $pcSize - $mobSize;
+	$addMobSize: $addSize + $addSize * 0.7;
+
+	@media (max-width: 768px) {
+		font-size: calc(#{$mobSize + px} + #{$addMobSize} * ((100vw - 320px) / #{$maxWidth}));
+	}
+
+	@media (min-width: 768px) {
+		font-size: calc(#{$mobSize + px} + #{$addSize} * (100vw / #{$maxWidth}));
+	}
+}
