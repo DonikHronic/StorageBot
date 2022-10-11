@@ -21,6 +21,8 @@ __pycache__/
 !*media/.gitkeep
 media/*
 
+!*static/.gitkeep
+
 log/debug.log
 
 build
@@ -34,3 +36,4 @@ doc-dev
 .log
 
 token.json
+/Pipfile.lock

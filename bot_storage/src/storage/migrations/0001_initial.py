@@ -7,7 +7,6 @@ import utils.get_folder_path
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -37,8 +36,10 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('count', models.PositiveIntegerField(default=0, verbose_name='Количество')),
                 ('date', models.DateTimeField(default=datetime.datetime.today, verbose_name='Дата')),
-                ('action', models.CharField(choices=[('ADD', 'Добавлено'), ('USED', 'Использовано')], default='USED', max_length=15, verbose_name='Действие')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='storage.storageproduct', verbose_name='Продукт')),
+                ('action', models.CharField(choices=[('ADD', 'Добавлено'), ('USED', 'Использовано')], default='USED',
+                                            max_length=15, verbose_name='Действие')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='storage.storageproduct',
+                                              verbose_name='Продукт')),
             ],
             options={
                 'verbose_name': 'История изменений',

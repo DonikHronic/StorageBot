@@ -8,7 +8,6 @@ import utils.get_folder_path
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -22,7 +21,9 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('password', models.CharField(max_length=128, verbose_name='password')),
                 ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False, help_text='Designates that this user has all permissions without explicitly assigning them.', verbose_name='superuser status')),
+                ('is_superuser', models.BooleanField(default=False,
+                                                     help_text='Designates that this user has all permissions without explicitly assigning them.',
+                                                     verbose_name='superuser status')),
                 ('username', models.CharField(max_length=25, unique=True, verbose_name='Пользователь')),
                 ('email', models.EmailField(max_length=254, unique=True, verbose_name='Email')),
                 ('phone_number', models.CharField(blank=True, max_length=15, null=True, verbose_name='Номер телефона')),
@@ -32,8 +33,13 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True, verbose_name='is_active')),
                 ('is_staff', models.BooleanField(default=False, verbose_name='is_staff')),
                 ('user_photo', models.ImageField(blank=True, null=True, upload_to='users_photos/')),
-                ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.Group', verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.Permission', verbose_name='user permissions')),
+                ('groups', models.ManyToManyField(blank=True,
+                                                  help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
+                                                  related_name='user_set', related_query_name='user', to='auth.Group',
+                                                  verbose_name='groups')),
+                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.',
+                                                            related_name='user_set', related_query_name='user',
+                                                            to='auth.Permission', verbose_name='user permissions')),
             ],
             options={
                 'verbose_name': 'Пользователь',
@@ -59,8 +65,10 @@ class Migration(migrations.Migration):
             name='Client',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cart', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.cart')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client', to=settings.AUTH_USER_MODEL)),
+                ('cart',
+                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.cart')),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client',
+                                              to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Клиент',
@@ -72,7 +80,8 @@ class Migration(migrations.Migration):
             name='Employee',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='employee', to=settings.AUTH_USER_MODEL)),
+                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='employee',
+                                              to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'Сотрудник',
@@ -101,8 +110,14 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('total_price', models.FloatField(default=0, verbose_name='Окончательная цена')),
                 ('location', models.CharField(max_length=150, verbose_name='Локация доставки')),
-                ('status', models.CharField(choices=[('IN_PROCESS', 'В процессе'), ('ACCEPTED', 'Принята'), ('IN_PURCHASE', 'В процессе закупа'), ('PREPARE_FOR_SHIPMENT', 'Подготовка к отправке'), ('SUBMITTED', 'Отправлена'), ('COMPLETED', 'Завершена')], default='IN_PROCESS', max_length=25, verbose_name='Статус')),
-                ('client', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.client', verbose_name='Клиент')),
+                ('status', models.CharField(choices=[('IN_PROCESS', 'В процессе'), ('ACCEPTED', 'Принята'),
+                                                     ('IN_PURCHASE', 'В процессе закупа'),
+                                                     ('PREPARE_FOR_SHIPMENT', 'Подготовка к отправке'),
+                                                     ('SUBMITTED', 'Отправлена'), ('COMPLETED', 'Завершена')],
+                                            default='IN_PROCESS', max_length=25, verbose_name='Статус')),
+                ('client',
+                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.client',
+                                   verbose_name='Клиент')),
                 ('products', models.ManyToManyField(to='bot.Product', verbose_name='Продукты')),
             ],
             options={
@@ -116,7 +131,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('key', models.CharField(max_length=20, verbose_name='Секретный ключ')),
-                ('employee', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.employee', verbose_name='Сотрудник')),
+                ('employee', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                                  to='bot.employee', verbose_name='Сотрудник')),
             ],
             options={
                 'verbose_name': 'Секретный ключ',

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ('bot', '0006_baseuser_email'),
     ]
@@ -18,15 +17,18 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='client',
             name='cart',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='client_cart', to='bot.cart'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
+                                    related_name='client_cart', to='bot.cart'),
         ),
         migrations.CreateModel(
             name='CartItems',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('count', models.PositiveIntegerField(default=1, verbose_name='Количество')),
-                ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.cart', verbose_name='Корзина')),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.product', verbose_name='Продукт')),
+                ('cart',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.cart', verbose_name='Корзина')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='bot.product',
+                                              verbose_name='Продукт')),
             ],
             options={
                 'verbose_name': 'Элемент корзины',
