@@ -37,4 +37,4 @@ doc-dev
 
 token.json
 /Pipfile.lock
-*/.env
+.env
