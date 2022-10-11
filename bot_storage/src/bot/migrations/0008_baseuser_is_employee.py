@@ -5,13 +5,13 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('bot', '0007_auto_20211213_2018'),
+        ("bot", "0007_auto_20211213_2018"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='baseuser',
-            name='is_employee',
-            field=models.BooleanField(default=False, verbose_name='is employee'),
+            model_name="baseuser",
+            name="is_employee",
+            field=models.BooleanField(default=False, verbose_name="is employee"),
         ),
     ]

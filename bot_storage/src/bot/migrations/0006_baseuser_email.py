@@ -5,13 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('bot', '0005_remove_baseuser_email'),
+        ("bot", "0005_remove_baseuser_email"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='baseuser',
-            name='email',
-            field=models.EmailField(blank=True, max_length=254, null=True, unique=True, verbose_name='Email'),
+            model_name="baseuser",
+            name="email",
+            field=models.EmailField(
+                blank=True, max_length=254, null=True, unique=True, verbose_name="Email"
+            ),
         ),
     ]

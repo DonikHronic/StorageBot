@@ -5,13 +5,15 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('bot', '0011_auto_20220102_2300'),
+        ("bot", "0011_auto_20220102_2300"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='ticket',
-            name='detail',
-            field=models.TextField(blank=True, max_length=1500, null=True, verbose_name='Описание'),
+            model_name="ticket",
+            name="detail",
+            field=models.TextField(
+                blank=True, max_length=1500, null=True, verbose_name="Описание"
+            ),
         ),
     ]

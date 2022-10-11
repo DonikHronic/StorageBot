@@ -5,20 +5,24 @@ from rest_framework import permissions
 
 schema_view = get_schema_view(
     openapi.Info(
-        title='Storage Bot',
-        default_version='v1',
-        description='Lorem Ipsum',
-        contact=openapi.Contact(url='https://github.com/DonikHronic'),
+        title="Storage Bot",
+        default_version="v1",
+        description="Lorem Ipsum",
+        contact=openapi.Contact(url="https://github.com/DonikHronic"),
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
-    path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
-    path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-    path('bot/', include('src.bot.api.routes')),
-    path('storage/', include('src.storage.api.routes')),
-    path('auth/', include('djoser.urls')),
-    path('auth/', include('djoser.urls.jwt')),
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
+    path("docs/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
+    path("bot/", include("src.bot.api.routes")),
+    path("storage/", include("src.storage.api.routes")),
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),
 ]

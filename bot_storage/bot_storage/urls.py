@@ -5,8 +5,8 @@ from django.urls import path, include
 from bot_storage import settings
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/v1/', include('src.routes')),
+    path("admin/", admin.site.urls),
+    path("api/v1/", include("src.routes")),
 ]
 
 if settings.DEBUG:

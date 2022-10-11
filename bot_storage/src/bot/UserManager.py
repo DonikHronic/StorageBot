@@ -9,9 +9,9 @@ class UserManager(BaseUserManager):
     """
 
     def create_user(self, username, email, password=None):
-        """ Создает и возвращает пользователя с имэйлом, паролем и именем. """
+        """Создает и возвращает пользователя с имэйлом, паролем и именем."""
         if username is None:
-            raise TypeError('Users must have a username.')
+            raise TypeError("Users must have a username.")
 
         # if email is None:
         # 	raise TypeError('Users must have an email address.')
@@ -23,9 +23,9 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, email, password):
-        """ Создает и возвращает пользователя с привилегиями суперадмина. """
+        """Создает и возвращает пользователя с привилегиями суперадмина."""
         if password is None:
-            raise TypeError('Superusers must have a password.')
+            raise TypeError("Superusers must have a password.")
 
         user = self.create_user(username, email, password)
         user.is_superuser = True

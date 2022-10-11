@@ -10,15 +10,16 @@ from src.bot.api.serializers import (
     EmployeeSerializer,
     BaseUserSerializer,
     CartItemSerializer,
-    TicketSerializer
+    TicketSerializer,
 )
 from src.bot.models import Product, Employee, BaseUser, Client, Cart, CartItems, Ticket
 
 
 class EmployeeProfileDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
-        Employee profile. Account settings
+    Employee profile. Account settings
     """
+
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsOwnerProfileOrReadOnly, IsAuthenticated]
@@ -40,14 +41,14 @@ class EmployeeRegistration(views.APIView):
         serializer = BaseUserSerializer(data=request.data)
         data = {key: val for key, val in request.data.items()}
         try:
-            data['telegram_id'] = int(data['telegram_id'])
+            data["telegram_id"] = int(data["telegram_id"])
         except KeyError:
             pass
-        role = data['role']
-        del data['role']
+        role = data["role"]
+        del data["role"]
         if serializer.is_valid() and role == BaseUser.Role.E:
             user = BaseUser(**data)
-            user.set_password(request.data['password'])
+            user.set_password(request.data["password"])
             user.save()
             employee = Employee(user_id=user.id)
             employee.save()
@@ -70,16 +71,16 @@ class ClientRegistration(views.APIView):
         serializer = BaseUserSerializer(data=request.data)
         data = {key: val for key, val in request.data.items()}
         try:
-            data['telegram_id'] = int(data['telegram_id'])
+            data["telegram_id"] = int(data["telegram_id"])
         except KeyError:
             pass
-        role = data['role']
-        del data['role']
+        role = data["role"]
+        del data["role"]
         if serializer.is_valid() and role == BaseUser.Role.C:
             user = BaseUser(**data)
             cart = Cart()
             cart.save()
-            user.set_password(request.data['password'])
+            user.set_password(request.data["password"])
             user.save()
             employee = Client(user_id=user.id, cart_id=cart.id)
             employee.save()
@@ -92,6 +93,7 @@ class ProductListCreateView(generics.ListCreateAPIView):
     Product View
     Create new Product or return Products List
     """
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
@@ -103,13 +105,14 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     Product Detail View
     Allows you to view and modify Product information
     """
+
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsAuthenticated]
     parser_classes = (parsers.MultiPartParser,)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_user_cart(request) -> Response:
     """
@@ -121,10 +124,10 @@ def get_user_cart(request) -> Response:
         serializer = CartItemSerializer(cart_items, many=True)
         return Response(serializer.data)
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def add_product_to_cart(request) -> Response:
     """
@@ -132,8 +135,8 @@ def add_product_to_cart(request) -> Response:
     """
     try:
         user_cart = request.user.client.cart_id
-        product_id = request.data.get('product', None)
-        count = request.data.get('count', 1)
+        product_id = request.data.get("product", None)
+        count = request.data.get("count", 1)
 
         if not product_id:
             raise ValueError("Product parameter is required")
@@ -143,22 +146,22 @@ def add_product_to_cart(request) -> Response:
             cart_item = check_cart[0]
             cart_item.count = count
             cart_item.save()
-            return Response(['Product added to cart'], status=status.HTTP_202_ACCEPTED)
+            return Response(["Product added to cart"], status=status.HTTP_202_ACCEPTED)
 
         cart = Cart.objects.get(id=user_cart)
         product = Product.objects.get(id=int(product_id))
         cart_item = CartItems(product=product, cart=cart, count=count)
         cart_item.save()
-        return Response(['Product added to cart'], status=status.HTTP_201_CREATED)
+        return Response(["Product added to cart"], status=status.HTTP_201_CREATED)
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
     except ValueError as ex:
-        return Response([f'Exception found. {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found. {ex}"], status=status.HTTP_400_BAD_REQUEST)
     except ObjectDoesNotExist as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_product_in_cart(request, pk: int) -> Response:
     """
@@ -169,7 +172,7 @@ def update_product_in_cart(request, pk: int) -> Response:
     """
 
     try:
-        count = request.data.get('count', None)
+        count = request.data.get("count", None)
 
         if not count:
             raise ValueError("Count parameter is required")
@@ -177,17 +180,17 @@ def update_product_in_cart(request, pk: int) -> Response:
         item = CartItems.objects.get(id=pk)
         item.count = count
         item.save()
-        return Response(['Product updated'], status=status.HTTP_202_ACCEPTED)
+        return Response(["Product updated"], status=status.HTTP_202_ACCEPTED)
 
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
     except ValueError as ex:
-        return Response(f'Exception found: {ex}', status=status.HTTP_400_BAD_REQUEST)
+        return Response(f"Exception found: {ex}", status=status.HTTP_400_BAD_REQUEST)
     except ObjectDoesNotExist as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def remove_from_cart(request, pk: int) -> Response:
     """
@@ -201,18 +204,20 @@ def remove_from_cart(request, pk: int) -> Response:
         item = CartItems.objects.get(cart_id=cart, product_id=pk)
         item.delete()
 
-        return Response(['Product removed'], status=status.HTTP_200_OK)
+        return Response(["Product removed"], status=status.HTTP_200_OK)
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
     except ObjectDoesNotExist:
-        return Response(['Your cart does not have this product'], status=status.HTTP_404_NOT_FOUND)
+        return Response(
+            ["Your cart does not have this product"], status=status.HTTP_404_NOT_FOUND
+        )
 
 
-@api_view(['DELETE'])
+@api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def clear_cart(request) -> Response:
     """
-        Clear user cart
+    Clear user cart
     """
     try:
         cart = request.user.client.cart_id
@@ -221,27 +226,29 @@ def clear_cart(request) -> Response:
         for item in items:
             item.delete()
 
-        return Response(['Cart cleared'], status=status.HTTP_200_OK)
+        return Response(["Cart cleared"], status=status.HTTP_200_OK)
 
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['POST'])
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def make_order(request) -> Response:
     try:
         user = request.user.client
         cart_items = CartItems.objects.filter(cart_id=user.cart_id)
-        location = request.data.get('location', 'default')
+        location = request.data.get("location", "default")
         total_price = get_total_price(cart_items)
         products = [item.product for item in cart_items]
 
-        description = ''
+        description = ""
         for item in cart_items:
-            description += f'Продукт: {item.product.name} в кол-ве {item.count}шт\n'
+            description += f"Продукт: {item.product.name} в кол-ве {item.count}шт\n"
 
-        ticket = Ticket(client=user, total_price=total_price, location=location, detail=description)
+        ticket = Ticket(
+            client=user, total_price=total_price, location=location, detail=description
+        )
         ticket.save()
         ticket.products.add(*products)
         ticket.save()
@@ -249,12 +256,12 @@ def make_order(request) -> Response:
         for item in cart_items:
             item.delete()
 
-        return Response(['Order created'], status=status.HTTP_201_CREATED)
+        return Response(["Order created"], status=status.HTTP_201_CREATED)
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_orders(request):
     tickets = Ticket.objects.all()
@@ -262,7 +269,7 @@ def get_orders(request):
     return Response(serializer.data)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_my_orders(request):
     try:
@@ -272,44 +279,46 @@ def get_my_orders(request):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 def get_status_list(request) -> Response:
     return Response(Ticket.Statuses.choices, status=status.HTTP_200_OK)
 
 
-@api_view(['PUT'])
+@api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def update_status(request) -> Response:
     try:
-        order_status = request.data.get('status', None)
-        order = request.data.get('order', None)
+        order_status = request.data.get("status", None)
+        order = request.data.get("order", None)
 
         if not order_status:
-            raise ValueError('Status is required')
+            raise ValueError("Status is required")
 
         if not order:
-            raise ValueError('Order ID is required')
+            raise ValueError("Order ID is required")
 
         if order_status not in Ticket.Statuses.names:
-            raise ValueError('Invalid status')
+            raise ValueError("Invalid status")
 
         ticket = Ticket.objects.get(id=order)
         ticket.status = order_status
         ticket.save()
 
-        return Response(['Status updated'], status=status.HTTP_202_ACCEPTED)
+        return Response(["Status updated"], status=status.HTTP_202_ACCEPTED)
 
     except AttributeError as ex:
-        return Response([f'Exception found: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response([f"Exception found: {ex}"], status=status.HTTP_400_BAD_REQUEST)
     except ValueError as ex:
-        return Response([f'Invalid data in request: {ex}'], status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            [f"Invalid data in request: {ex}"], status=status.HTTP_400_BAD_REQUEST
+        )
     except ObjectDoesNotExist:
         return Response(
             [f'Order with ID {request.data.get("order", None)}, does not exist'],
-            status=status.HTTP_400_BAD_REQUEST
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
 

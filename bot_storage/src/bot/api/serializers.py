@@ -6,13 +6,21 @@ from src.bot.models import Product, Employee, Client, BaseUser, CartItems, Ticke
 class BaseUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['username', 'password']
+        fields = ["username", "password"]
 
 
 class UserViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = BaseUser
-        fields = ['id', 'fullname', 'username', 'user_photo', 'email', 'phone_number', 'telegram_id']
+        fields = [
+            "id",
+            "fullname",
+            "username",
+            "user_photo",
+            "email",
+            "phone_number",
+            "telegram_id",
+        ]
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
@@ -20,7 +28,7 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Employee
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ClientSerializer(serializers.ModelSerializer):
@@ -28,13 +36,13 @@ class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Client
-        fields = '__all__'
+        fields = "__all__"
 
 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = "__all__"
 
 
 class CartItemSerializer(serializers.ModelSerializer):
@@ -43,7 +51,7 @@ class CartItemSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CartItems
-        fields = '__all__'
+        fields = "__all__"
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -52,4 +60,4 @@ class TicketSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Ticket
-        fields = '__all__'
+        fields = "__all__"

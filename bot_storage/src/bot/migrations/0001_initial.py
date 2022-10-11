@@ -11,138 +11,327 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('auth', '0012_alter_user_first_name_max_length'),
+        ("auth", "0012_alter_user_first_name_max_length"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='BaseUser',
+            name="BaseUser",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('password', models.CharField(max_length=128, verbose_name='password')),
-                ('last_login', models.DateTimeField(blank=True, null=True, verbose_name='last login')),
-                ('is_superuser', models.BooleanField(default=False,
-                                                     help_text='Designates that this user has all permissions without explicitly assigning them.',
-                                                     verbose_name='superuser status')),
-                ('username', models.CharField(max_length=25, unique=True, verbose_name='Пользователь')),
-                ('email', models.EmailField(max_length=254, unique=True, verbose_name='Email')),
-                ('phone_number', models.CharField(blank=True, max_length=15, null=True, verbose_name='Номер телефона')),
-                ('fullname', models.CharField(max_length=150, verbose_name='Полное имя')),
-                ('user_id', models.PositiveIntegerField(blank=True, null=True, verbose_name='Telegram ID')),
-                ('date_joined', models.DateTimeField(auto_now_add=True, verbose_name='Дата регистрации')),
-                ('is_active', models.BooleanField(default=True, verbose_name='is_active')),
-                ('is_staff', models.BooleanField(default=False, verbose_name='is_staff')),
-                ('user_photo', models.ImageField(blank=True, null=True, upload_to='users_photos/')),
-                ('groups', models.ManyToManyField(blank=True,
-                                                  help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.',
-                                                  related_name='user_set', related_query_name='user', to='auth.Group',
-                                                  verbose_name='groups')),
-                ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.',
-                                                            related_name='user_set', related_query_name='user',
-                                                            to='auth.Permission', verbose_name='user permissions')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("password", models.CharField(max_length=128, verbose_name="password")),
+                (
+                    "last_login",
+                    models.DateTimeField(
+                        blank=True, null=True, verbose_name="last login"
+                    ),
+                ),
+                (
+                    "is_superuser",
+                    models.BooleanField(
+                        default=False,
+                        help_text="Designates that this user has all permissions without explicitly assigning them.",
+                        verbose_name="superuser status",
+                    ),
+                ),
+                (
+                    "username",
+                    models.CharField(
+                        max_length=25, unique=True, verbose_name="Пользователь"
+                    ),
+                ),
+                (
+                    "email",
+                    models.EmailField(
+                        max_length=254, unique=True, verbose_name="Email"
+                    ),
+                ),
+                (
+                    "phone_number",
+                    models.CharField(
+                        blank=True,
+                        max_length=15,
+                        null=True,
+                        verbose_name="Номер телефона",
+                    ),
+                ),
+                (
+                    "fullname",
+                    models.CharField(max_length=150, verbose_name="Полное имя"),
+                ),
+                (
+                    "user_id",
+                    models.PositiveIntegerField(
+                        blank=True, null=True, verbose_name="Telegram ID"
+                    ),
+                ),
+                (
+                    "date_joined",
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name="Дата регистрации"
+                    ),
+                ),
+                (
+                    "is_active",
+                    models.BooleanField(default=True, verbose_name="is_active"),
+                ),
+                (
+                    "is_staff",
+                    models.BooleanField(default=False, verbose_name="is_staff"),
+                ),
+                (
+                    "user_photo",
+                    models.ImageField(blank=True, null=True, upload_to="users_photos/"),
+                ),
+                (
+                    "groups",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.Group",
+                        verbose_name="groups",
+                    ),
+                ),
+                (
+                    "user_permissions",
+                    models.ManyToManyField(
+                        blank=True,
+                        help_text="Specific permissions for this user.",
+                        related_name="user_set",
+                        related_query_name="user",
+                        to="auth.Permission",
+                        verbose_name="user permissions",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Пользователь',
-                'verbose_name_plural': 'Пользователи',
-                'db_table': 'user',
+                "verbose_name": "Пользователь",
+                "verbose_name_plural": "Пользователи",
+                "db_table": "user",
             },
             managers=[
-                ('objects', django.contrib.auth.models.UserManager()),
+                ("objects", django.contrib.auth.models.UserManager()),
             ],
         ),
         migrations.CreateModel(
-            name='Cart',
+            name="Cart",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Корзина',
-                'verbose_name_plural': 'Корзины',
-                'db_table': 'cart',
+                "verbose_name": "Корзина",
+                "verbose_name_plural": "Корзины",
+                "db_table": "cart",
             },
         ),
         migrations.CreateModel(
-            name='Client',
+            name="Client",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cart',
-                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.cart')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='client',
-                                              to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "cart",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="bot.cart",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="client",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Клиент',
-                'verbose_name_plural': 'Клиенты',
-                'db_table': 'client',
+                "verbose_name": "Клиент",
+                "verbose_name_plural": "Клиенты",
+                "db_table": "client",
             },
         ),
         migrations.CreateModel(
-            name='Employee',
+            name="Employee",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='employee',
-                                              to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="employee",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Сотрудник',
-                'verbose_name_plural': 'Сотрудники',
-                'db_table': 'employee',
+                "verbose_name": "Сотрудник",
+                "verbose_name_plural": "Сотрудники",
+                "db_table": "employee",
             },
         ),
         migrations.CreateModel(
-            name='Product',
+            name="Product",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=150, verbose_name='Название')),
-                ('image', models.ImageField(upload_to=utils.get_folder_path.image_path, verbose_name='Изображение')),
-                ('description', models.TextField(max_length=5000, verbose_name='Описание')),
-                ('url', models.SlugField(max_length=250, unique=True, verbose_name='Ссылка')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=150, verbose_name="Название")),
+                (
+                    "image",
+                    models.ImageField(
+                        upload_to=utils.get_folder_path.image_path,
+                        verbose_name="Изображение",
+                    ),
+                ),
+                (
+                    "description",
+                    models.TextField(max_length=5000, verbose_name="Описание"),
+                ),
+                (
+                    "url",
+                    models.SlugField(
+                        max_length=250, unique=True, verbose_name="Ссылка"
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Продукт',
-                'verbose_name_plural': 'Продукты',
-                'db_table': 'product',
+                "verbose_name": "Продукт",
+                "verbose_name_plural": "Продукты",
+                "db_table": "product",
             },
         ),
         migrations.CreateModel(
-            name='Ticket',
+            name="Ticket",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('total_price', models.FloatField(default=0, verbose_name='Окончательная цена')),
-                ('location', models.CharField(max_length=150, verbose_name='Локация доставки')),
-                ('status', models.CharField(choices=[('IN_PROCESS', 'В процессе'), ('ACCEPTED', 'Принята'),
-                                                     ('IN_PURCHASE', 'В процессе закупа'),
-                                                     ('PREPARE_FOR_SHIPMENT', 'Подготовка к отправке'),
-                                                     ('SUBMITTED', 'Отправлена'), ('COMPLETED', 'Завершена')],
-                                            default='IN_PROCESS', max_length=25, verbose_name='Статус')),
-                ('client',
-                 models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, to='bot.client',
-                                   verbose_name='Клиент')),
-                ('products', models.ManyToManyField(to='bot.Product', verbose_name='Продукты')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "total_price",
+                    models.FloatField(default=0, verbose_name="Окончательная цена"),
+                ),
+                (
+                    "location",
+                    models.CharField(max_length=150, verbose_name="Локация доставки"),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("IN_PROCESS", "В процессе"),
+                            ("ACCEPTED", "Принята"),
+                            ("IN_PURCHASE", "В процессе закупа"),
+                            ("PREPARE_FOR_SHIPMENT", "Подготовка к отправке"),
+                            ("SUBMITTED", "Отправлена"),
+                            ("COMPLETED", "Завершена"),
+                        ],
+                        default="IN_PROCESS",
+                        max_length=25,
+                        verbose_name="Статус",
+                    ),
+                ),
+                (
+                    "client",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="bot.client",
+                        verbose_name="Клиент",
+                    ),
+                ),
+                (
+                    "products",
+                    models.ManyToManyField(to="bot.Product", verbose_name="Продукты"),
+                ),
             ],
             options={
-                'verbose_name': '',
-                'verbose_name_plural': '',
-                'db_table': 'ticket',
+                "verbose_name": "",
+                "verbose_name_plural": "",
+                "db_table": "ticket",
             },
         ),
         migrations.CreateModel(
-            name='SecretKey',
+            name="SecretKey",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('key', models.CharField(max_length=20, verbose_name='Секретный ключ')),
-                ('employee', models.OneToOneField(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL,
-                                                  to='bot.employee', verbose_name='Сотрудник')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("key", models.CharField(max_length=20, verbose_name="Секретный ключ")),
+                (
+                    "employee",
+                    models.OneToOneField(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        to="bot.employee",
+                        verbose_name="Сотрудник",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Секретный ключ',
-                'verbose_name_plural': 'Секретные ключи',
-                'db_table': 'secret_key',
+                "verbose_name": "Секретный ключ",
+                "verbose_name_plural": "Секретные ключи",
+                "db_table": "secret_key",
             },
         ),
         migrations.AddField(
-            model_name='cart',
-            name='products',
-            field=models.ManyToManyField(to='bot.Product', verbose_name='Продукты'),
+            model_name="cart",
+            name="products",
+            field=models.ManyToManyField(to="bot.Product", verbose_name="Продукты"),
         ),
     ]

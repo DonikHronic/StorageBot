@@ -6,13 +6,43 @@ def convert_text(inner_text: str):
     """
 
     lower_case_letters = {
-        u'а': u'a', u'б': u'b', u'в': u'v', u'г': u'g', u'д': u'd', u'е': u'e', u'ё': u'e', u'ж': u'zh', u'з': u'z',
-        u'и': u'i', u'й': u'y', u'к': u'k', u'л': u'l', u'м': u'm', u'н': u'n', u'о': u'o', u'п': u'p', u'р': u'r',
-        u'с': u's', u'т': u't', u'у': u'u', u'ф': u'f', u'х': u'h', u'ц': u'ts', u'ч': u'ch', u'ш': u'sh', u'щ': u'sch',
-        u'ъ': u'', u'ы': u'y', u'ь': u'', u'э': u'e', u'ю': u'yu', u'я': u'ya', u' ': u'_'
+        "а": "a",
+        "б": "b",
+        "в": "v",
+        "г": "g",
+        "д": "d",
+        "е": "e",
+        "ё": "e",
+        "ж": "zh",
+        "з": "z",
+        "и": "i",
+        "й": "y",
+        "к": "k",
+        "л": "l",
+        "м": "m",
+        "н": "n",
+        "о": "o",
+        "п": "p",
+        "р": "r",
+        "с": "s",
+        "т": "t",
+        "у": "u",
+        "ф": "f",
+        "х": "h",
+        "ц": "ts",
+        "ч": "ch",
+        "ш": "sh",
+        "щ": "sch",
+        "ъ": "",
+        "ы": "y",
+        "ь": "",
+        "э": "e",
+        "ю": "yu",
+        "я": "ya",
+        " ": "_",
     }
 
-    transliterated_text = ''
+    transliterated_text = ""
     for index, char in enumerate(str(inner_text).lower()):
         if char in lower_case_letters:
             transliterated_text += lower_case_letters[char]
@@ -23,4 +53,4 @@ def convert_text(inner_text: str):
 
 
 def image_path(instance, filename):
-    return f'products/{convert_text(instance.name)}/{filename}'
+    return f"products/{convert_text(instance.name)}/{filename}"

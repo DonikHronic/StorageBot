@@ -2,6 +2,6 @@ from django.apps import AppConfig
 
 
 class BotConfig(AppConfig):
-    default_auto_field = 'django.db.models.BigAutoField'
-    name = 'src.bot'
-    verbose_name = 'Бот'
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "src.bot"
+    verbose_name = "Бот"
